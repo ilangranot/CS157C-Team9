@@ -1,17 +1,23 @@
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Transaction;
 import org.neo4j.driver.TransactionWork;
+import org.neo4j.driver.Value;
+import org.neo4j.driver.exceptions.Neo4jException;
 
 import static org.neo4j.driver.Values.parameters;
 
-public class Program implements AutoCloseable{
+import java.util.Collections;
+import java.util.Map;
+
+public class App implements AutoCloseable{
     private final Driver driver;
 
-    public Program( String uri, String user, String password )
+    public App( String uri, String user, String password )
     {
         driver = GraphDatabase.driver( uri, AuthTokens.basic( user, password ) );
     }
@@ -41,12 +47,37 @@ public class Program implements AutoCloseable{
             System.out.println( greeting );
         }
     }
+    
+    public boolean checkNode(final String url) {
+    	boolean returnVal;
+    	String readPersonByNameQuery = "MATCH (n:website)\n" +
+                "WHERE n.url = $url\n" +
+                "RETURN n.url AS url";
+
+        Map<String, Object> params = Collections.singletonMap("url", url);
+
+        try (Session session = driver.session()) {
+            Record record = (Record) session.readTransaction(tx -> {
+                Result result = tx.run(readPersonByNameQuery, params);
+                return result.single();
+            });
+            System.out.println(String.format("Found url: %s", ((Record) record).get("url").asString()));
+            returnVal = true;
+        // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+        	returnVal = false;
+            throw ex;
+        }
+        return returnVal;
+    }
+    
 
     public static void main( String... args ) throws Exception
     {
-        try ( Program greeter = new Program( "bolt://localhost:7687", "neo4j", "password" ) )
+        try ( App greeter = new App( "bolt://localhost:7687", "neo4j", "password" ) )
         {
             greeter.printGreeting( "hello, world" );
+            greeter.getAll("https://sjsu.instructure.com/courses/1377088/modules");
         }
     }
 }
