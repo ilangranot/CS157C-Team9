@@ -44,7 +44,7 @@ public class Program implements AutoCloseable{
 
     public static void main( String... args ) throws Exception
     {
-        try ( Program greeter = new Program( "bolt://localhost:7687", "neo4j", "password" ) )
+        try ( Program greeter = new Program( "bolt://localhost", "neo4j", "1234" ) )
         {
             greeter.printGreeting( "hello, world" );
         }
