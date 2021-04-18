@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /**
  * A NoSQL Approach to Web Usage Mining of Frequent Patterns
  * Authors: Ilan Granot, Nick Kim, Sebrianne Ferguson, Mike Wu
@@ -14,6 +12,8 @@ import java.util.ArrayList;
  * WUMGrapher.java
  * Purpose: provide an API for Web Usage Mining of Frequent Patterns
  */
+
+import java.util.ArrayList;
 
 public class WUMGrapher {
 
