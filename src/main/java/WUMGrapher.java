@@ -68,13 +68,13 @@ public class WUMGrapher {
     }
 
     /**
-     * updateTransaction()
+     * updateTransition()
      * @param urlA - the starting node's URL
      * @param urlB - the URL for the node to transition to
      * @param updateInfo - any information needed to update
      * @return - 0 if all goes smoothly, -1 if there is an issue
      */
-    public int updateTransaction(String urlA, String urlB, String updateInfo) {
+    public int updateTransition(String urlA, String urlB, String updateInfo) {
         return 0;
     }
 
