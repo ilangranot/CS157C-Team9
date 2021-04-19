@@ -11,6 +11,10 @@
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.exceptions.Neo4jException;
@@ -21,11 +25,14 @@ import org.neo4j.driver.Session;
 import org.neo4j.driver.Transaction;
 import org.neo4j.driver.TransactionWork;
 import org.neo4j.driver.Value;
+import org.neo4j.driver.exceptions.NoSuchRecordException;
+
 import static org.neo4j.driver.Values.parameters;
 
 public class WUMGrapher implements AutoCloseable {
 
     private final Driver driver;
+    private String url;
 
     /**
      * initialize the database
@@ -47,31 +54,48 @@ public class WUMGrapher implements AutoCloseable {
      * @return - True/False depending on whether a node for page was found
      */
     public boolean findPageNode(String url) {
-        // TODO: complete this method
-        // this should execute a match query
-        // if there is something found, return true
-        // should handle exceptions being thrown
-        // returns false if not found or exception is thrown
-        return true;
+        boolean found = false;
+        String query = "MATCH (n:webpage) WHERE n.url = $url \n RETURN n";
+        Map<String, Object> params = Collections.singletonMap("url", url);
+
+        try (Session session = driver.session()) {
+            Record record = (Record) session.readTransaction(tx -> {
+                Result result = tx.run(query, params);
+                if (result.hasNext()) return result.single();
+                return null;
+            });
+            if (record != null) found = true;
+        } catch (Neo4jException ex) {
+            throw ex;
+        }
+        return found;
     }
 
     /**
      * createPageNode()
      * Adds a new node to the graph if one for the given URL does not exist.
-     * @param userID - the ID of the anonymous user, used for creating sessions
-     * @param date - date accessed by this particular user
-     * @param time - time of access by user
      * @param url - url of the webpage
-     * @return - 0 if all goes smoothly, -1 if there is an issue.
+     * @return - 0 if all goes well,
+     *           1 if the node already exists in the database
+     *          -1 if the node does not exist in the database but cannot be added
      */
-    public int createPageNode(int userID, String date, String time, String url) {
-        if (findPageNode(url)) {
+    public int createPageNode(String url) {
+        if (findPageNode(url)) return 1;
+
+        String query = "CREATE (ee:webpage {url: $url})";
+        Map<String, Object> params = new HashMap<>();
+        params.put("url", url);
+
+        try (Session session = driver.session()) {
+            Record record = session.writeTransaction(tx -> {
+                Result result = tx.run(query, params);
+                if (result.hasNext()) return result.single();
+                return null;
+            });
+            if (record == null) return -1;
+        } catch (Neo4jException ex) {
             return -1;
         }
-        // TODO: complete this method
-        // should use the passed-in parameters in a CREATE query
-        // return -1 if this node is already in graph or exception thrown
-        // return 0 if the node is added successfully
         return 0;
     }
 
