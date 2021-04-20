@@ -128,11 +128,11 @@ public class App implements AutoCloseable{
     }
 
     //Not finished
-    public boolean deleteRelationship(final String url) {
-        String deleteQuery = "MATCH (n:website {url: $url})-[r:NAVTO2]->()\n" +
+    public boolean deleteRelationship(final String url, final String relationship) {
+        String deleteQuery = "MATCH (n:website {url: $url})-[r:$relationship]->()\n" +
                 "DELETE r";
 
-        Map<String, Object> params = Collections.singletonMap("url", url);
+        Map<String, Object> params = Collections.singletonMap("relationship", relationship);
 
         try (Session session = driver.session()) {
             Record record = (Record) session.readTransaction(tx -> {
