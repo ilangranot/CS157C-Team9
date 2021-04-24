@@ -105,6 +105,49 @@ public class App implements AutoCloseable{
             throw ex;
         }
     }
+
+    public boolean deleteNode(final String url) {
+        String deleteQuery = "MATCH (n:website {url: $url})\n" +
+                "DETACH DELETE n";
+
+        Map<String, Object> params = Collections.singletonMap("url", url);
+
+        try (Session session = driver.session()) {
+            Record record = (Record) session.readTransaction(tx -> {
+                Result result = tx.run(deleteQuery, params);
+                return result.single();
+            });
+            System.out.println(String.format("Removed url: %s", ((Record) record).get("url").asString()));
+            returnVal = true;
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            returnVal = false;
+            throw ex;
+        }
+        return returnVal;
+    }
+
+    //Not finished
+    public boolean deleteRelationship(final String url, final String relationship) {
+        String deleteQuery = "MATCH (n:website {url: $url})-[r:$relationship]->()\n" +
+                "DELETE r";
+
+        Map<String, Object> params = Collections.singletonMap("relationship", relationship);
+
+        try (Session session = driver.session()) {
+            Record record = (Record) session.readTransaction(tx -> {
+                Result result = tx.run(deleteQuery, params);
+                return result.single();
+            });
+            System.out.println(String.format("Removed relationship fom url: %s", ((Record) record).get("url").asString()));
+            returnVal = true;
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            returnVal = false;
+            throw ex;
+        }
+        return returnVal;
+    }
     
 
     // public static void main( String... args ) throws Exception
