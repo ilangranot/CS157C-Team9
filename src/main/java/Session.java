@@ -5,7 +5,7 @@ public class Session {
     private List<Transaction> list;
     private int userID;
 
-    public Session(Date userID) {
+    public Session(int userID) {
         this.userID = userID;
     }
 
@@ -21,7 +21,7 @@ public class Session {
         return sessionID;
     }
 
-    public getUserID() {
+    public int getUserID() {
         return userID;
     }
 

@@ -107,16 +107,16 @@ public class App implements AutoCloseable{
     }
     
 
-    public static void main( String... args ) throws Exception
-    {
-    	String url1 = "https://sjsu.instructure.com/courses/1377088";
-    	String url2 = "https://sjsu.instructure.com/courses/1377088/modules";
-        try ( App greeter = new App( "bolt://localhost:7687", "neo4j", "password" ) )
-        {
-            //greeter.printGreeting( "hello, world" );
-            //greeter.checkNode("https://sjsu.instructure.com/courses/1377088/modules");
-            //greeter.createNavigation(url1, url2, "9", "07/15/2020");
-            greeter.getAll();
-        }
-    }
+    // public static void main( String... args ) throws Exception
+    // {
+    // 	String url1 = "https://sjsu.instructure.com/courses/1377088";
+    // 	String url2 = "https://sjsu.instructure.com/courses/1377088/modules";
+    //     try ( App greeter = new App( "bolt://localhost:7687", "neo4j", "password" ) )
+    //     {
+    //         //greeter.printGreeting( "hello, world" );
+    //         //greeter.checkNode("https://sjsu.instructure.com/courses/1377088/modules");
+    //         //greeter.createNavigation(url1, url2, "9", "07/15/2020");
+    //         greeter.getAll();
+    //     }
+    // }
 }
