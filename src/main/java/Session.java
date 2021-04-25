@@ -9,6 +9,7 @@ public class Session {
     public Session(int sessionID, int userID) {
         this.userID = userID;
         this.list = new ArrayList<>();
+        this.sessionID = sessionID;
     }
 
     public void addTransaction(Transaction transaction) {
