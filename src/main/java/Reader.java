@@ -33,6 +33,13 @@ public class Reader {
                 String URL = data[6];
                 Date date = sdf.parse(data[3] + " " + data[4]);
 
+                /* Communicate with Backend
+                WUM.addPage(URL);
+                if(previousURL != null) {
+                    WUM.addTransition(previousURL, URL);
+                }
+                */
+
                 System.out.println(userID + ": " + URL + " " + date.getTime()); // Remove later
                 Transaction transaction = new Transaction(previousURL, URL, date);
 
@@ -53,9 +60,6 @@ public class Reader {
                     previousSession = session;
                     sessions.add(session);
                 }
-
-
-
 
                 previousUser = userID;
                 previousDate = date;
