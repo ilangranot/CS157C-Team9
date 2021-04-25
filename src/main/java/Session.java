@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Session {
@@ -5,16 +6,17 @@ public class Session {
     private List<Transaction> list;
     private int userID;
 
-    public Session(int userID) {
+    public Session(int sessionID, int userID) {
         this.userID = userID;
+        this.list = new ArrayList<>();
     }
 
     public void addTransaction(Transaction transaction) {
         list.add(transaction);
     }
 
-    public void deleteTransaction() {
-
+    public void deleteTransaction(Transaction transaction) {
+        list.remove(transaction);
     }
 
     public int getSessionID() {

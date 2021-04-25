@@ -109,7 +109,7 @@ public class App implements AutoCloseable{
     public boolean deleteNode(final String url) {
         String deleteQuery = "MATCH (n:website {url: $url})\n" +
                 "DETACH DELETE n";
-
+        boolean returnVal;
         Map<String, Object> params = Collections.singletonMap("url", url);
 
         try (Session session = driver.session()) {
@@ -131,7 +131,7 @@ public class App implements AutoCloseable{
     public boolean deleteRelationship(final String url, final String relationship) {
         String deleteQuery = "MATCH (n:website {url: $url})-[r:$relationship]->()\n" +
                 "DELETE r";
-
+        boolean returnVal;
         Map<String, Object> params = Collections.singletonMap("relationship", relationship);
 
         try (Session session = driver.session()) {
