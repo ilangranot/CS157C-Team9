@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+  width: 130px;
+  position: fixed;
+  top: 40%;
+  left: 20px;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #064579;
+}
+
+.main {
+  margin-left: 160px; /* Same width as the sidebar + left position in px */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+.content {
+  font-size: 20px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+  border: 5px solid black;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
+<body>
+
+  <div class="sidenav">
+    <a href="/create.html">Create</a>
+    <br/>
+    <a href="/search.html">Search</a>
+    <br/>
+    <a href="/mine.html">Mine</a>
+  </div>
+
+<div class="main">
+  <h1>Web Usage Miner</h1>
+
+
+  <div class="content">
+    <p> Appropriate content based on the choice made above </p>
+    <br/>
+    <p> we will bring up
+    a form to ask them for filtering information such as webpages involved,
+     the date/time it took place and display sessions that match</p>
+    <br />
+    <p> the user can also choose to view information about FPs </p>
+    <br />
+  </div>
+
+  </div>
+
+</body>
+</html>

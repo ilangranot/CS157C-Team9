@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+  width: 130px;
+  position: fixed;
+  top: 40%;
+  left: 20px;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #064579;
+}
+
+.main {
+  margin-left: 160px; /* Same width as the sidebar + left position in px */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+.content {
+  font-size: 20px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+  border: 5px solid black;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
+<body>
+
+  <div class="sidenav">
+    <a href="/create.html">Create</a>
+    <br/>
+    <a href="/search.html">Search</a>
+    <br/>
+    <a href="/mine.html">Mine</a>
+  </div>
+
+<div class="main">
+  <h1>Web Usage Miner</h1>
+  <form>
+    <p>Would you like to create a...</p>
+    <input type="radio" id="node" name="node" value="Webpage">
+    <label for="node">Webpage</label>
+    <input type="radio" id="edge" name="edge" value="Transition">
+    <label for="edge">Transition</label><br>
+  </form>
+  <br />
+
+  <div class="content">
+    <p> Appropriate content based on the choice made above </p>
+    <br/>
+    <p> If the user chose to create a webpage node, then they will be asked
+    for the url of the page. </p>
+    <br />
+    <p> if the user chose to create a transition, they will be asked for the
+      two webpages to create the transition between, the user id number, the
+      date and time of the transition. </p>
+    <br />
+    <p> if the webpage exists, a new one will not be added. if the Transition
+    exists with the same user, date and time, then the metadata will be updated
+    for that transition</p>
+  </div>
+
+  </div>
+
+</body>
+</html>
