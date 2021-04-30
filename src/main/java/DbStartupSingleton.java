@@ -3,7 +3,6 @@ import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.dbms.api.DatabaseNotFoundException;
 import org.neo4j.graphdb.ConstraintViolationException;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.schema.Schema;
 import java.io.File;
@@ -77,7 +76,7 @@ public class DbStartupSingleton {
         //TODO: Check if exists
 //        if (transaction.schema().constraintFor(NodeLabels.Page) == null )
         transaction.schema()
-                .constraintFor( NodeLabels.Page )
+                .constraintFor( NodeLabel.Page )
                 .assertPropertyIsUnique( "url" )
                 .create();
         transaction.commit();
