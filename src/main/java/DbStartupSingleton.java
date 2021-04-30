@@ -1,24 +1,44 @@
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
+import org.neo4j.dbms.api.DatabaseNotFoundException;
+import org.neo4j.graphdb.ConstraintViolationException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
-
+import org.neo4j.graphdb.schema.Schema;
 import java.io.File;
 
-import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
+
 
 public class DbStartupSingleton {
-    private static GraphDatabaseService _graphDatabaseService; //TODO: make singleton
+    private static GraphDatabaseService _graphDatabaseService = null; //TODO: make singleton
+    public static final String DATABASE_DIRECTORY = "/Users/ilangranot/IdeaProjects/GraphWum";
+    private static final String DATABASE_NAME = "neo4j";
 
 
-    public DbStartupSingleton() {
-        File databaseDirectory;
-        DatabaseManagementService managementService = new DatabaseManagementServiceBuilder(databaseDirectory).build();
-        _graphDatabaseService = managementService.database(DEFAULT_DATABASE_NAME);
-        registerShutdownHook( managementService );
+    private DbStartupSingleton() {
     }
 
+    public static GraphDatabaseService getGraphDatabaseService() {
+        if (_graphDatabaseService == null){
+            File databaseDirectory = new File(DATABASE_DIRECTORY);
+            DatabaseManagementService managementService = new DatabaseManagementServiceBuilder(databaseDirectory).build();
+            try {
+                _graphDatabaseService = managementService.database(DATABASE_NAME);
+                setupDbSettingsUniqueConstrain();
+            } catch (DatabaseNotFoundException databaseNotFoundException){
+                managementService.createDatabase(DATABASE_NAME);
+                // TODO: repeating instruction - advise
+                _graphDatabaseService = managementService.database(DATABASE_NAME);
+                setupDbSettingsUniqueConstrain();
+            } catch (ConstraintViolationException constraintViolationException){
+                System.out.println(constraintViolationException.getMessage());
+            }
+            registerShutdownHook( managementService );
+        }
+
+        return _graphDatabaseService;
+    }
 
     private static void registerShutdownHook( final DatabaseManagementService managementService )
     {
@@ -36,14 +56,30 @@ public class DbStartupSingleton {
     }
 
 
-    private void setupDbSettingsUniqueConstrain(){
-        try ( Transaction transaction = _graphDatabaseService.beginTx() )
+    //TODO: Getprogress: https://neo4j.com/docs/java-reference/current/java-embedded/indexes/
+    public void getProgress(){
+        try ( Transaction tx = _graphDatabaseService.beginTx() )
         {
-            transaction.schema()
-                    .constraintFor( Label.label( "Page" ) )
-                    .assertPropertyIsUnique( "url" )
-                    .create();
-            transaction.commit();
+            Schema schema = tx.schema();
+//            System.out.println( String.format( "Percent complete: %1.0f%%",
+//                    schema.getIndexPopulationProgress( usernamesIndex ).getCompletedPercentage() ) );
         }
+    }
+
+
+
+    //TODO: Add INDEX
+
+
+    // Setup settings for the db constraint
+    private static void setupDbSettingsUniqueConstrain(){
+        Transaction transaction = _graphDatabaseService.beginTx();
+        //TODO: Check if exists
+//        if (transaction.schema().constraintFor(NodeLabels.Page) == null )
+        transaction.schema()
+                .constraintFor( NodeLabels.Page )
+                .assertPropertyIsUnique( "url" )
+                .create();
+        transaction.commit();
     }
 }
