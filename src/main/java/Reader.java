@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/***
+ *
+ */
 public class Reader {
     public static final int SESSION_TIMEOUT = 960000;
     public static final String fileName = "./src/main/java/1_22_ordered_combined_instructureHistory.tsv";
@@ -19,7 +22,10 @@ public class Reader {
     private static String previousURL = null;
     private static Session previousSession;
 
-    public static void main(String[] args) {
+    /***
+     *
+     */
+    public static void read() {
         try {
 
             File file = new File(fileName);
@@ -41,42 +47,70 @@ public class Reader {
                     WUM.addTransition(previousURL, URL);
                 }
                 */
-
-                System.out.println(userID + ": " + URL + " " + date.getTime()); // Remove later
-                Transaction transaction = new Transaction(previousURL, URL, date);
-
-                if(userID == previousUser) { //Check if same ID, otherwise new session
-                    if((date.getTime() - previousDate.getTime()) <  SESSION_TIMEOUT) { //Check if time passed is less than 16 min, otherwise new session
-                        previousSession.addTransaction(transaction);
-                    }
-                    else {
-                        createSession(transaction, userID);
-                    }
-                }
-                else {
-                    createSession(transaction, userID);
-                }
-
-                previousUser = userID;
-                previousDate = date;
+                TransactionProcessor processor = new TransactionProcessor();
+                processor.process( userID, URL, date );
             }
 
-            System.out.println(sessions.size()); //Remove later
+            System.out.println(sessions.size()); // Remove later
         }
         catch (IOException | ParseException e) {
         }
     }
 
-    public static Session createSession(Transaction transaction, int userID) {
-        Session session = new Session(sessions.size(), userID);
-        session.addTransaction(transaction);
-        previousSession = session;
-        sessions.add(session);
-        return session;
-    }
 
-    public class TransactionProcessor {
+    /***
+     *
+     */
+    private static class TransactionProcessor {
+        /***
+         *
+         * @param userID
+         * @param URL
+         * @param date
+         */
+        public void process(int userID, String URL, Date date) {
+//            System.out.println(userID + ": " + URL + " " + date.getTime()); // Remove later
+            Transaction transaction = new Transaction(previousURL, URL, date); // Build Object
 
+            if(sameSession(userID, date)) { // Check if same session
+                previousSession.addTransaction(transaction);
+            }
+            else {
+                createSession(transaction, userID);
+            }
+            previousUser = userID; // Store ID
+            previousDate = date; // Store date
+        }
+
+        /***
+         *
+         * @param userID
+         * @param date
+         * @return
+         */
+        public boolean sameSession(int userID, Date date) {
+            if(userID == previousUser) { // Check if same ID or past timeout
+                if((date.getTime() - previousDate.getTime()) < SESSION_TIMEOUT) { // Check if time passed is less than 16 min
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        /***
+         *
+         * @param transaction
+         * @param userID
+         * @return
+         */
+        public Session createSession(Transaction transaction, int userID) {
+            Session session = new Session(sessions.size(), userID);
+            session.addTransaction(transaction);
+            previousSession = session;
+            sessions.add(session);
+            return session;
+        }
     }
 
 }
