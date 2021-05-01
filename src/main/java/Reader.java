@@ -9,9 +9,11 @@ import java.util.Date;
 import java.util.List;
 
 public class Reader {
+    public static final int SESSION_TIMEOUT = 960000;
+    public static final String fileName = "./src/main/java/1_22_ordered_combined_instructureHistory.tsv";
+    public static final String dateFormat = "MM/dd/yy HH:mm:ss";
 
     private static List<Session> sessions;
-
     private static Date previousDate;
     private static int previousUser = -1;
     private static String previousURL = null;
@@ -20,10 +22,10 @@ public class Reader {
     public static void main(String[] args) {
         try {
 
-            File file = new File("./src/main/java/1_22_ordered_combined_instructureHistory.tsv");
+            File file = new File(fileName);
             BufferedReader lineReader = new BufferedReader(new FileReader(file));
             String lineText = null;
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             sessions = new ArrayList<>();
 
             while( (lineText = lineReader.readLine()) != null) {
@@ -44,21 +46,15 @@ public class Reader {
                 Transaction transaction = new Transaction(previousURL, URL, date);
 
                 if(userID == previousUser) { //Check if same ID, otherwise new session
-                    if((date.getTime() - previousDate.getTime()) <  960000) { //Check if time passed is less than 16 min, otherwise new session
+                    if((date.getTime() - previousDate.getTime()) <  SESSION_TIMEOUT) { //Check if time passed is less than 16 min, otherwise new session
                         previousSession.addTransaction(transaction);
                     }
                     else {
-                        Session session = new Session(sessions.size(), userID);
-                        session.addTransaction(transaction);
-                        previousSession = session;
-                        sessions.add(session);
+                        createSession(transaction, userID);
                     }
                 }
                 else {
-                    Session session = new Session(sessions.size(), userID);
-                    session.addTransaction(transaction);
-                    previousSession = session;
-                    sessions.add(session);
+                    createSession(transaction, userID);
                 }
 
                 previousUser = userID;
@@ -69,6 +65,18 @@ public class Reader {
         }
         catch (IOException | ParseException e) {
         }
+    }
+
+    public static Session createSession(Transaction transaction, int userID) {
+        Session session = new Session(sessions.size(), userID);
+        session.addTransaction(transaction);
+        previousSession = session;
+        sessions.add(session);
+        return session;
+    }
+
+    public class TransactionProcessor {
+
     }
 
 }
