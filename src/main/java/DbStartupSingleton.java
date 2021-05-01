@@ -13,10 +13,10 @@ public class DbStartupSingleton {
 
 
     public DbStartupSingleton() {
-        File databaseDirectory;
-        DatabaseManagementService managementService = new DatabaseManagementServiceBuilder(databaseDirectory).build();
-        _graphDatabaseService = managementService.database(DEFAULT_DATABASE_NAME);
-        registerShutdownHook( managementService );
+        //File databaseDirectory;
+        //DatabaseManagementService managementService = new DatabaseManagementServiceBuilder(databaseDirectory).build();
+        //_graphDatabaseService = managementService.database(DEFAULT_DATABASE_NAME);
+       // registerShutdownHook( managementService );
     }
 
 

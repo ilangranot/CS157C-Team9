@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="js/scripts.js"></script>
+</head>
+<body>
+<h1 class="title">Web Usage Miner</h1>
+<div class="sidenav">
+    <a href = "/"><span class="smalldot">Home</span></a>
+</div>
+
+<div class="content">
+    <div class="tab">
+        <span class="choice active" onclick="infofunc(event, 'node')">Webpage</span>
+        <span class="choice" onclick="infofunc(event, 'edge')">Transition</span>
+    </div>
+    <div class = "bordered">
+        <div id="node" class="tabcontent" style="display:block;">
+            <h3>Delete Webpage Node</h3>
+            <p>Enter the URL for the webpage you would like to delete from the database.</p>
+            <br/><br/>
+            <form>
+                <input type="url" id="url" name="url" value="www.">
+                <input type="submit" id="submitnode" name="submit" value="Delete">
+                <br/><br/><br/><br/><br/><br/><br/>
+            </form>
+        </div>
+        <div id="edge" class="tabcontent">
+            <h3>Delete Transition</h3>
+            <p>Enter the URLs for the webpage to transition from and the webpage to
+                transition to that you'd like to disconnect.</p>
+            <br/><br/>
+            <form>
+                <input type="url" id="url1" name="url" value="www.startingurl.com">
+                <br/>
+                <input type="url" id="url2" name="url" value="www.endingurl.com">
+                <br/>
+                <input type="submit" id="submitedge" name="submit" value="Delete">
+                </br>
+            </form>
+            <br/><br/><br/><br/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

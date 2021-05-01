@@ -1,4 +1,4 @@
-import com.sun.javafx.geom.ArcIterator;
+/*import com.sun.javafx.geom.ArcIterator;
 import org.neo4j.graphdb.*;
 
 import java.net.URL;
@@ -48,7 +48,7 @@ public class DbWrapper implements AutoCloseable {
             return result;
         }
     }
-
+*/
 
     // TODO: to remove
 //    public void printGreeting( final String message )
@@ -70,4 +70,4 @@ public class DbWrapper implements AutoCloseable {
 //            System.out.println( greeting );
 //        }
 //    }
-}
+//}

@@ -1,4 +1,4 @@
-public class Program {
+/*public class Program {
     private DbWrapper dbWrapper;
 
 
@@ -9,4 +9,4 @@ public class Program {
             dbWrapper.printGreeting( "hello, world" );
 
     }
-}
+}*/
