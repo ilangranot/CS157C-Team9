@@ -1,4 +1,3 @@
-import org.neo4j.driver.*;
 import org.neo4j.driver.types.Node;
 import org.neo4j.driver.types.Relationship;
 
@@ -18,12 +17,11 @@ public class WebUsage {
         return dbWrapper.createNodeIfNotExists(NodeLabel.Page, "url", url.toExternalForm());
     }
 
-    public Relationship addTransition(URL fromURL, URL toURL, Object session){
-        Relationship result = null;
+    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
         Node fromPage = addPage(fromURL);
-        Node toPage = addPage(fromURL);
-        dbWrapper.createRelationshipIfNotExists(new TransitionType("1"), fromPage, toPage, NodeLabel.Page, "url", "1", session);
-        return result;
+        Node toPage = addPage(toURL);
+        dbWrapper.createRelationshipIfNotExists(new TransitionType(userSession.getId()),
+                fromPage, toPage, NodeLabel.Page, "url", "session", userSession.getId());
     }
 
 }

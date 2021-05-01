@@ -49,6 +49,7 @@ public class DbStartupSingleton {
             @Override
             public void run()
             {
+                System.out.println("Shutting down DB");
                 managementService.shutdown();
             }
         } );
