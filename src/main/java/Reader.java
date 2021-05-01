@@ -57,6 +57,10 @@ public class Reader {
         }
     }
 
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
 
     /***
      *
