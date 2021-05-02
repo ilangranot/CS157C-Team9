@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import java.net.URL;
+
 /***
  *
  */
@@ -16,39 +18,37 @@ public class Reader {
     public static final String fileName = "./src/main/java/1_22_ordered_combined_instructureHistory.tsv";
     public static final String dateFormat = "MM/dd/yy HH:mm:ss";
 
-    private static List<Session> sessions;
+    private static List<SessionSIN> sessions;
     private static Date previousDate;
     private static int previousUser = -1;
     private static String previousURL = null;
-    private static Session previousSession;
+    private static SessionSIN previousSession;
+    private static WebUsage webUsage;
 
     /***
      *
      */
     public static void read() {
+        int count = 0;
         try {
-
+            webUsage = new WebUsage();
             File file = new File(fileName);
             BufferedReader lineReader = new BufferedReader(new FileReader(file));
             String lineText = null;
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             sessions = new ArrayList<>();
 
-            while( (lineText = lineReader.readLine()) != null) {
+            while( (lineText = lineReader.readLine()) != null && count  < 2000) {
                 String[] data = lineText.split("\t"); //Read Line in
                 //Get Data from line
                 int userID = Integer.parseInt(data[0]);
                 String URL = data[6];
                 Date date = sdf.parse(data[3] + " " + data[4]);
 
-                /* Communicate with Backend
-                WUM.addPage(URL);
-                if(previousURL != null) {
-                    WUM.addTransition(previousURL, URL);
-                }
-                */
                 TransactionProcessor processor = new TransactionProcessor();
                 processor.process( userID, URL, date );
+                count++;
+                //System.out.println(count);
             }
 
             System.out.println(sessions.size()); // Remove later
@@ -57,7 +57,7 @@ public class Reader {
         }
     }
 
-    public List<Session> getSessions() {
+    public List<SessionSIN> getSessions() {
         return sessions;
     }
 
@@ -74,16 +74,25 @@ public class Reader {
          */
         public void process(int userID, String URL, Date date) {
 //            System.out.println(userID + ": " + URL + " " + date.getTime()); // Remove later
-            Transaction transaction = new Transaction(previousURL, URL, date); // Build Object
+            TransactionSIN transaction = new TransactionSIN(previousURL, URL, date); // Build Object
+            try {
+                webUsage.addPage(new URL(URL));
 
-            if(sameSession(userID, date)) { // Check if same session
-                previousSession.addTransaction(transaction);
+                if(sameSession(userID, date)) { // Check if same session
+                    webUsage.addTransition(new URL(previousURL), new URL(URL), new UserSession(String.valueOf(sessions.size())));
+                    previousSession.addTransaction(transaction);
+                }
+                else {
+                    createSession(transaction, userID);
+                }
+                previousUser = userID; // Store ID
+                previousURL = URL;
+                previousDate = date; // Store date
             }
-            else {
-                createSession(transaction, userID);
+            catch (Exception exception){
+                exception.printStackTrace();
             }
-            previousUser = userID; // Store ID
-            previousDate = date; // Store date
+
         }
 
         /***
@@ -108,8 +117,8 @@ public class Reader {
          * @param userID
          * @return
          */
-        public Session createSession(Transaction transaction, int userID) {
-            Session session = new Session(sessions.size(), userID);
+        public SessionSIN createSession(TransactionSIN transaction, int userID) {
+            SessionSIN session = new SessionSIN(sessions.size(), userID);
             session.addTransaction(transaction);
             previousSession = session;
             sessions.add(session);

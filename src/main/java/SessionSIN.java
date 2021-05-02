@@ -1,22 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Session {
+public class SessionSIN {
     private int sessionID;
-    private List<Transaction> list;
+    private List<TransactionSIN> list;
     private int userID;
 
-    public Session(int sessionID, int userID) {
+    public SessionSIN(int sessionID, int userID) {
         this.userID = userID;
         this.list = new ArrayList<>();
         this.sessionID = sessionID;
     }
 
-    public void addTransaction(Transaction transaction) {
+    public void addTransaction(TransactionSIN transaction) {
         list.add(transaction);
     }
 
-    public void deleteTransaction(Transaction transaction) {
+    public void deleteTransaction(TransactionSIN transaction) {
         list.remove(transaction);
     }
 

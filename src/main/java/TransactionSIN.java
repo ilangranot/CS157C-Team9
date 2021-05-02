@@ -1,11 +1,11 @@
 import java.util.Date;
 
-public class Transaction {
+public class TransactionSIN {
     private String fromURL;
     private String toURL;
     private Date atTime;
 
-    public Transaction(String fromURL, String toURL, Date atTime) {
+    public TransactionSIN(String fromURL, String toURL, Date atTime) {
         this.fromURL = fromURL;
         this.toURL = toURL;
         this.atTime = atTime;
