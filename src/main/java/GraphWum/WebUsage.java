@@ -1,4 +1,5 @@
-import GraphWum.*;
+package GraphWum;
+
 import org.neo4j.driver.types.Node;
 import org.neo4j.driver.types.Relationship;
 
