@@ -10,6 +10,7 @@ public class Program {
         int errorCode = 0;
         try {
             WebUsage webUsage = new WebUsage();
+
             webUsage.addPage(new URL("https://sjsu.instructure.com/11"));
             webUsage.addPage(new URL("https://sjsu.instructure.com/4"));
             webUsage.addPage(new URL("https://sjsu.instructure.com/5"));

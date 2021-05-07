@@ -81,34 +81,10 @@ public class DbWrapperDriver implements DbWrapper, AutoCloseable {
     }
 
 
-//    @Override
-//    public Relationship createRelationshipIfNotExists(TransitionType transitionType, Node nodeA, Node nodeB, NodeLabel nodeLabel, String matchProperty, String key, Object value) {
-
-//    }
 
     @Override
     public void close() throws Exception {
         System.out.println("Shutting down DB");
         driver.close();
     }
-
-
-
-    // TODO: to remove
-//    public void printGreeting( final String message )
-//    {
-//        try ( Transaction transaction = graphDatabaseService.beginTx() )
-//        {
-//            String query =  "CREATE (a:Greeting) " +
-//                    "SET a.message = $message " +
-//                    "RETURN a.message + ', from node ' + id(a)";
-//            Map<String, Object> parameters = new HashMap<>();
-//            parameters.put( "message", message );
-//            Result result = transaction.execute(query, parameters);
-//            transaction.commit();
-//            System.out.println(result.resultAsString());
-//        }
-//
-//    }
-
 }

@@ -7,9 +7,10 @@ public class WebUsage {
     private DbWrapper dbWrapper;
 
     public WebUsage() {
-        dbWrapper = new DbWrapperDriver("bolt://localhost:7687", "neo4j", "password" );
+//        dbWrapper = new DbWrapperDriver("bolt://localhost:7687", "neo4j", "password" );
 //        dbWrapper.assertConstraints(NodeLabel.Page, "url");
-//        dbWrapper = new DbWrapperEmbedded(DbStartupSingleton.getGraphDatabaseService());
+        dbWrapper = new DbWrapperEmbedded(DbStartupSingleton.getGraphDatabaseService());
+        ((DbWrapperEmbedded)dbWrapper).printGreeting("Hello Ilan");
     }
 
 
