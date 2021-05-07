@@ -1,6 +1,5 @@
-package GraphWum;
-
 import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Relationship;
 
 import java.net.URL;
 
@@ -8,9 +7,9 @@ public class WebUsage {
     private DbWrapper dbWrapper;
 
     public WebUsage() {
-        dbWrapper = new DbWrapperDriver("bolt://localhost:7687", "neo4j", "1234" );
+//        dbWrapper = new DbWrapperDriver("bolt://localhost:7687", "neo4j", "password" );
 //        dbWrapper.assertConstraints(NodeLabel.Page, "url");
-//        dbWrapper = new DbWrapperEmbedded(DbStartupSingleton.getGraphDatabaseService());
+        dbWrapper = new DbWrapperEmbedded(DbStartupSingleton.getGraphDatabaseService());
     }
 
 

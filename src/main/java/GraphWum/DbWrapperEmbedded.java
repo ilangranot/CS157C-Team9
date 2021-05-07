@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.neo4j.driver.Values.parameters;
 
 // TODO: Suppose to implement db wrapper
-public class DbWrapperEmbedded {
+public class DbWrapperEmbedded implements DbWrapper {
     private final GraphDatabaseService graphDatabaseService;
 
 
@@ -71,20 +71,34 @@ public class DbWrapperEmbedded {
 
 
     // TODO: to remove
-//    public void printGreeting( final String message )
-//    {
-//        try ( Transaction transaction = graphDatabaseService.beginTx() )
-//        {
-//            String query =  "CREATE (a:Greeting) " +
-//                    "SET a.message = $message " +
-//                    "RETURN a.message + ', from node ' + id(a)";
-//            Map<String, Object> parameters = new HashMap<>();
-//            parameters.put( "message", message );
-//            Result result = transaction.execute(query, parameters);
-//            transaction.commit();
-//            System.out.println(result.resultAsString());
-//        }
-//
-//    }
+    public void printGreeting( final String message )
+    {
+        try ( Transaction transaction = graphDatabaseService.beginTx() )
+        {
+            String query =  "CREATE (a:Greeting) " +
+                    "SET a.message = $message " +
+                    "RETURN a.message + ', from node ' + id(a)";
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put( "message", message );
+            Result result = transaction.execute(query, parameters);
+            transaction.commit();
+            System.out.println(result.resultAsString());
+        }
 
+    }
+
+    @Override
+    public org.neo4j.driver.types.Node createNodeIfNotExists(NodeLabel nodeLabel, String key, Object value) {
+        return null;
+    }
+
+    @Override
+    public void createRelationshipIfNotExists(TransitionType transitionType, org.neo4j.driver.types.Node nodeA, org.neo4j.driver.types.Node nodeB, NodeLabel nodeLabel, String matchProperty, String key, String value) {
+
+    }
+
+    @Override
+    public void assertConstraints(NodeLabel nodeLabel, String key) {
+
+    }
 }
