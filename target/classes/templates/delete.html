@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content = "text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="js/scripts.js"></script>
+    <title> CS 157C Group 9 Project </title>
+</head>
+<body>
+<h1 class="title">Web Usage Miner</h1>
+<div class="sidenav">
+    <a href = "/"><span class="smalldot">Home</span></a>
+</div>
+
+<div class="content">
+    <div class="tab">
+        <span class="choice active" onclick="infofunc(event, 'node')">Webpage</span>
+        <span class="choice" onclick="infofunc(event, 'edge')">Transition</span>
+    </div>
+    <div class = "bordered">
+        <div id="node" class="tabcontent" style="display:block;">
+            <h3>Delete Webpage Node</h3>
+            <p>Enter the URL for the webpage you would like to delete from the database.</p>
+            <br/>
+            <form action = "#" th:action="@{/delete}" method = "post" th:object="${url}">
+                <input type="url" th:field="*{url}" placeholder = "Enter URL" required>
+                <input type="hidden" th:value="1" name="mode" />
+                <br/>
+                <input type="submit" id="submitnode" name="submit" value="Delete">
+                <br/><br/><br/><br/><br/>
+            </form>
+        </div>
+        <div id="edge" class="tabcontent">
+            <h3>Delete Transition</h3>
+            <p>Enter the information for the webpage to delete the transition from and the webpage to
+                transition to.</p>
+            <br/>
+            <form action = "#" th:action="@{/create}" method = "post" th:object="${url}">
+                <input type="hidden" th:value="2" name="mode" />
+                <label> User ID </label>
+                <br/>
+                <input type="number" th:field="*{userid}" placeholder="Enter User ID" required>
+                <br/>
+                <label> Session ID </label>
+                <br/>
+                <input type="text" th:field="*{sessionid}" placeholder="Enter Session ID" required>
+                <br/><br/>
+                <label> Enter Information for Starting Webpage </label>
+                <br/>
+                <input type="url" th:field="*{urlFrom}" placeholder="Enter Starting URL" required>
+                <br/>
+                <input type="date" th:field="*{dateFrom}" placeholder="Enter Date of Access" required>
+                <br/>
+                <input type="time" th:field="*{timeFrom}" placeholder="Enter Time of Access" required>
+                <br/><br/>
+                <label> Enter Information for Ending Webpage </label>
+                <br/>
+                <input type="url" th:field="*{urlTo}" placeholder="Enter Ending URL" required>
+                <br/>
+                <input type="date" th:field="*{dateTo}" placeholder="Enter Date of Access" required>
+                <br/>
+                <input type="time" th:field="*{timeTo}" placeholder="Enter Time of Access" required>
+                <br/>
+                <input type="submit" id="submitedge" name="submit" value="Delete">
+            </form>
+            <br/><br/><br/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

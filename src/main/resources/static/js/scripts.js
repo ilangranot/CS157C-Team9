@@ -11,3 +11,8 @@ function infofunc(e, info) {
    document.getElementById(info).style.display = "block";
    e.currentTarget.className += " active";
 }
+
+function loadSubmit(e)
+{
+    document.getElementById("readform").submit();
+}
