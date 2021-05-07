@@ -6,5 +6,7 @@ public interface DbWrapper{
     public void createRelationshipIfNotExists(TransitionType transitionType, Node nodeA, Node nodeB,
                                               NodeLabel nodeLabel, String matchProperty, String key, String value);
 
-    public void assertConstraints(NodeLabel nodeLabel, String key);
+    public void assertConstraintsIndexes(NodeLabel nodeLabel, String key);
+
+    public String deleteEntireDb();
 }

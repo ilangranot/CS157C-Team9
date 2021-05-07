@@ -18,20 +18,23 @@ public class Reader {
     public static final String fileName = "./src/main/java/1_22_ordered_combined_instructureHistory.tsv";
     public static final String dateFormat = "MM/dd/yy HH:mm:ss";
 
-    private static List<SessionSIN> sessions;
-    private static Date previousDate;
-    private static int previousUser = -1;
-    private static String previousURL = null;
-    private static SessionSIN previousSession;
-    private static WebUsage webUsage;
+    private List<SessionSIN> sessions;
+    private Date previousDate;
+    private int previousUser = -1;
+    private String previousURL = null;
+    private SessionSIN previousSession;
+    private WebUsage webUsage;
+
+    public Reader(WebUsage webUsage) {
+        this.webUsage = webUsage;
+    }
 
     /***
      *
      */
-    public static void read() {
+    public void read() {
         int count = 0;
         try {
-            webUsage = new WebUsage();
             File file = new File(fileName);
             BufferedReader lineReader = new BufferedReader(new FileReader(file));
             String lineText = null;
@@ -48,7 +51,7 @@ public class Reader {
                 TransactionProcessor processor = new TransactionProcessor();
                 processor.process( userID, URL, date );
                 count++;
-                //System.out.println(count);
+                System.out.println(count);
             }
 
             System.out.println(sessions.size()); // Remove later
@@ -65,7 +68,7 @@ public class Reader {
     /***
      *
      */
-    private static class TransactionProcessor {
+    private class TransactionProcessor {
         /***
          *
          * @param userID

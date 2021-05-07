@@ -1,15 +1,14 @@
 import org.neo4j.driver.types.Node;
-import org.neo4j.driver.types.Relationship;
 
 import java.net.URL;
 
 public class WebUsage {
-    private DbWrapper dbWrapper;
+    private final DbWrapper dbWrapper;
 
-    public WebUsage() {
-        dbWrapper = new DbWrapperDriver("bolt://localhost:7687", "neo4j", "password" );
-//        dbWrapper.assertConstraints(NodeLabel.Page, "url");
-//        dbWrapper = new DbWrapperEmbedded(DbStartupSingleton.getGraphDatabaseService());
+    public WebUsage(DbWrapper dbWrapper) {
+        this.dbWrapper = dbWrapper;
+        dbWrapper.assertConstraintsIndexes(NodeLabel.Page, "url");
+        dbWrapper.deleteEntireDb();
     }
 
 

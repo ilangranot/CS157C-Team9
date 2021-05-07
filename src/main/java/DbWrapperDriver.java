@@ -29,6 +29,17 @@ public class DbWrapperDriver implements DbWrapper, AutoCloseable {
 //    }
 
 
+    public String deleteEntireDb(){
+        Result result;
+        try ( Session session = driver.session() )
+        {
+            String query =  "MATCH (n) DETACH DELETE n";
+
+            result = session.run(query);
+        }
+        return result.consume().toString();
+    }
+
 
     // TODO: change Label into list of labels and to multiple key values
     @Override
@@ -69,9 +80,12 @@ public class DbWrapperDriver implements DbWrapper, AutoCloseable {
 
     // TODO: Too lazy to generalize ...
     @Override
-    public void assertConstraints(NodeLabel nodeLabel, String key) {
+    public void assertConstraintsIndexes(NodeLabel nodeLabel, String key) {
         try (Session session = driver.session()) {
-            String query = "CREATE CONSTRAINT unique_webpages_url ON (n: " + nodeLabel + ") ASSERT n." + key + " IS UNIQUE";
+            String query = "CREATE CONSTRAINT unique_webpages_url IF NOT EXISTS ON (n: " + nodeLabel + ") ASSERT n." + key + " IS UNIQUE";
+            session.run(query);
+            query = "CREATE INDEX index_webpages_url IF NOT EXISTS FOR (n:" + nodeLabel + ") ON (n." + key + ")";
+            session.run(query);
         } catch (Exception exception){
             System.out.println("At DbWrapperDriver.assertConstraints");
             System.out.println(exception.getMessage());

@@ -1,9 +1,15 @@
 import java.util.List;
 
 public class Model {
-    public static void processFile() {
-            Reader r = new Reader();
-            r.read();
-            List<SessionSIN> sessions = r.getSessions();
+    private final WebUsage webUsage;
+
+    public Model(DbWrapper dbWrapper) {
+        this.webUsage = new WebUsage(dbWrapper);
+    }
+
+    public void processFile() {
+        Reader reader = new Reader(webUsage);
+        reader.read();
+        List<SessionSIN> sessions = reader.getSessions();
     }
 }
