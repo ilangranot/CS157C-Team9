@@ -1,17 +1,14 @@
-package GraphWum;
-
 import org.neo4j.driver.types.Node;
-import org.neo4j.driver.types.Relationship;
 
 import java.net.URL;
 
 public class WebUsage {
-    private DbWrapper dbWrapper;
+    private final DbWrapper dbWrapper;
 
-    public WebUsage() {
-//        dbWrapper = new DbWrapperDriver("bolt://localhost:7687", "neo4j", "password" );
-//        dbWrapper.assertConstraints(NodeLabel.Page, "url");
-        dbWrapper = new DbWrapperEmbedded(DbStartupSingleton.getGraphDatabaseService());
+    public WebUsage(DbWrapper dbWrapper) {
+        this.dbWrapper = dbWrapper;
+        dbWrapper.deleteEntireDb();
+        dbWrapper.createConstraintsIndexes(NodeLabel.Page, "url");
     }
 
 
@@ -19,11 +16,25 @@ public class WebUsage {
         return dbWrapper.createNodeIfNotExists(NodeLabel.Page, "url", url.toExternalForm());
     }
 
-    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
-        Node fromPage = addPage(fromURL);
-        Node toPage = addPage(toURL);
-        dbWrapper.createRelationshipIfNotExists(new TransitionType(userSession.getId()),
-                fromPage, toPage, NodeLabel.Page, "url", "session", userSession.getId());
+    public void removePage(URL url){
+        dbWrapper.deleteNode(NodeLabel.Page, "url", url.toExternalForm());
     }
 
+    // TODO: CHECK if to set all as TRANSITION_TO
+    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
+        dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
+                fromURL.toExternalForm(), toURL.toExternalForm(), NodeLabel.Page, "url", "s" + userSession.getId(), userSession.getId()); //"session"
+    }
+
+    public void addTransition(Node fromPage, Node toPage, UserSession userSession){
+        dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
+                fromPage, toPage, NodeLabel.Page, "url", "sessions", userSession.getId()); //"session"
+    }
+
+//    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
+//        Node fromPage = addPage(fromURL);
+//        Node toPage = addPage(toURL);
+//        dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
+//                fromPage, toPage, NodeLabel.Page, "url", "s" + userSession.getId(), userSession.getId()); //"session"
+//    }
 }

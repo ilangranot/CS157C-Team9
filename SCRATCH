@@ -1,0 +1,38 @@
+match (a)-[r]->(b) WHERE size(r.sessions) > 10 return r;
+
+
+
+String query = "MATCH (a:" + nodeLabel + "), (b:" + nodeLabel +")" +
+                " WHERE a."+ matchProperty + " = " + nodeA.get(matchProperty)  +
+                " AND b." + matchProperty + " = " + nodeB.get(matchProperty)  +
+                " MERGE (a)-[r: " + transitionType.name() +"]->(b)" +
+                "SET r." + key + "=coalesce(r." + key + ", []) +  $" + key +
+                " RETURN type(r)";
+
+
+String query = "MATCH (a:" + nodeLabel + "), (b:" + nodeLabel +")" +
+                " WHERE a."+ matchProperty + " = " + nodeA.get(matchProperty)  +
+                " AND b." + matchProperty + " = " + nodeB.get(matchProperty)  +
+                " MERGE (a)-[r: " + transitionType.name() +"]->(b)" +
+                "SET r."+ key + "= $" + key +
+                " RETURN type(r)";
+
+
+String query = " MERGE (a:Page{url: " + nodeA.get(matchProperty) + "})-[r: "
+                + transitionType.name() +"]->(b:Page{url: " + nodeB.get(matchProperty) + "})" +
+                "SET r." + key + "=coalesce(r." + key + ", []) +  $" + key +
+                " RETURN type(r)";
+
+
+PROFILE MERGE (a:Page {url: "fdssd"})
+        MERGE (b:Page {url: "fdssd"})
+                MERGE (a)-[r: TRANSISTION_TO]->(b)
+                SET r.sessions=coalesce(r.sessions, []) + "ds"
+RETURN type(r)
+
+
+
+PROFILE MATCH (a:Page {url: "fdssd"}), (b:Page {url: "fdssd"})
+                MERGE (a)-[r: TRANSISTION_TO]->(b)
+                SET r.sessions=coalesce(r.sessions, []) + "ds"
+RETURN type(r)

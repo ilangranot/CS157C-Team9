@@ -30,6 +30,28 @@ public class DbWrapperDriver implements DbWrapper, AutoCloseable {
 //    }
 
 
+    public void deleteNode(NodeLabel nodeLabel, String key, Object value){
+        String query = "MATCH (n:" + nodeLabel + " {"+ key + ": $" + key + "} DELETE n";
+        try (Session session = driver.session()) {
+            session.writeTransaction(
+                    transaction -> transaction.run(query, Values.parameters(key, value)));
+        } catch (Exception exception) {
+            System.out.println("At DbWrapperDriver.createNodeIfNotExists");
+            System.out.println(exception.getMessage());
+            System.out.println(exception.getStackTrace());
+        }
+    }
+
+    public String deleteEntireDb(){
+        Result result;
+        try ( Session session = driver.session() )
+        {
+            String query =  "MATCH (n) DETACH DELETE n";
+            result = session.run(query);
+        }
+        return result.consume().toString();
+    }
+
 
     // TODO: change Label into list of labels and to multiple key values
     @Override
@@ -50,18 +72,44 @@ public class DbWrapperDriver implements DbWrapper, AutoCloseable {
 
     @Override
     public void createRelationshipIfNotExists(
-            TransitionType transitionType, Node nodeA, Node nodeB,
+            TransitionType transitionType, String propertyA, String propertyB,
             NodeLabel nodeLabel, String matchProperty, String key, String value) {
-        Relationship relationship = null;
-        String query = "MATCH (a:" + nodeLabel + "), (b:" + nodeLabel +")" +
-                " WHERE a."+ matchProperty + " = " + nodeA.get(matchProperty)  +
-                " AND b." + matchProperty + " = " + nodeB.get(matchProperty)  +
-                " MERGE (a)-[r: s" + transitionType.name() +" {"+ key + ": $" + key + "}]->(b)" +
+        String query = "MERGE (a:" + nodeLabel +" {"+ matchProperty + ": '" + propertyA + "'}) " +
+                "MERGE (b:" + nodeLabel +" {"+ matchProperty + ": '" + propertyB + "'}) " +
+                " MERGE (a)-[r: " + transitionType.name() +"]->(b)" +
+                "SET r." + key + "=coalesce(r." + key + ", []) +  $" + key +
                 " RETURN type(r)";
+//        String query = " MERGE (a:" + nodeLabel + " {url: '" + propertyA + "'})-[r: " + transitionType.name() +
+//                " {"+ key + ": $" + key + "}]->(b:" + nodeLabel + " {url: '" + propertyB + "'})" +
+//                " RETURN type(r)";
         try (Session session = driver.session()) {
             session.writeTransaction(tx -> tx.run(query, Values.parameters(key, value)));
         } catch (Exception exception) {
-            System.out.println("At DbWrapperDriver.createRelationshipIfNotExists");
+            System.out.println("At DbWrapperDriver.createRelationshipIfNotExists 1");
+            System.out.println(exception.getMessage());
+            System.out.println(exception.getCause());
+            System.out.println(exception.getStackTrace());
+        }
+    }
+
+    @Override
+    public void createRelationshipIfNotExists(
+            TransitionType transitionType, Node nodeA, Node nodeB,
+            NodeLabel nodeLabel, String matchProperty, String key, String value) {
+        Relationship relationship = null;
+        String query = "MERGE (n:" + nodeLabel +" {"+ matchProperty + ": $" + nodeA.get(matchProperty) + "}) " +
+                "MERGE (n:" + nodeLabel +" {"+ matchProperty + ": $" + nodeB.get(matchProperty) + "}) " +
+                " MERGE (a)-[r: " + transitionType.name() +"]->(b)" +
+                "SET r." + key + "=coalesce(r." + key + ", []) +  $" + key +
+                " RETURN type(r)";
+//            String query = "MATCH (a:Page {url: " + nodeA.get(matchProperty) + "}), (b:Page{url: " + nodeB.get(matchProperty) + "})" +
+//                    " MERGE (a)-[r: " + transitionType.name() +"]->(b)" +
+//                    "SET r." + key + "=coalesce(r." + key + ", []) +  $" + key +
+//                    " RETURN type(r)";
+        try (Session session = driver.session()) {
+            session.writeTransaction(tx -> tx.run(query, Values.parameters(key, value)));
+        } catch (Exception exception) {
+            System.out.println("At DbWrapperDriver.createRelationshipIfNotExists 2");
             System.out.println(exception.getMessage());
             System.out.println(exception.getCause());
             System.out.println(exception.getStackTrace());
@@ -70,9 +118,25 @@ public class DbWrapperDriver implements DbWrapper, AutoCloseable {
 
     // TODO: Too lazy to generalize ...
     @Override
-    public void assertConstraints(NodeLabel nodeLabel, String key) {
+    public void createConstraintsIndexes(NodeLabel nodeLabel, String key) {
         try (Session session = driver.session()) {
-            String query = "CREATE CONSTRAINT unique_webpages_url ON (n: " + nodeLabel + ") ASSERT n." + key + " IS UNIQUE";
+            String query = "CREATE CONSTRAINT unique_webpages_url IF NOT EXISTS ON (n: " + nodeLabel + ") ASSERT n." + key + " IS UNIQUE";
+            session.run(query);
+            query = "CREATE INDEX index_webpages_url IF NOT EXISTS FOR (n:" + nodeLabel + ") ON (n." + key + ")";
+            session.run(query);
+        } catch (Exception exception){
+            System.out.println("At DbWrapperDriver.assertConstraints");
+            System.out.println(exception.getMessage());
+            System.out.println(exception.getCause());
+            System.out.println(exception.getStackTrace());
+        }
+    }
+
+    @Override
+    public void assertConstraintsIndexes(NodeLabel nodeLabel, String key) {
+        try (Session session = driver.session()) {
+            String query = "SHOW INDEXES";
+            session.run(query);
         } catch (Exception exception){
             System.out.println("At DbWrapperDriver.assertConstraints");
             System.out.println(exception.getMessage());
