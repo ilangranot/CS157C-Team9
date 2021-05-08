@@ -1,3 +1,5 @@
+package GraphWum;
+
 public class PageURL {
     private String stuff = null;
     private String otherStuff = null;

@@ -1,3 +1,5 @@
+package GraphWum;
+
 public class GraphStats {
     private String operation;
     private long linesRead;
