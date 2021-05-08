@@ -6,20 +6,24 @@ import java.util.List;
 
 public class Model {
 
-    private static final WebUsage wu = new WebUsage();
+    private final WebUsage webUsage;
 
-    public static void processFile() {
-            Reader r = new Reader();
-            r.read();
-            List<SessionSIN> sessions = r.getSessions();
+    public Model(DbWrapper dbWrapper) {
+        this.webUsage = new WebUsage(dbWrapper);
+    }
+
+    public void processFile() {
+        Reader r = new Reader(webUsage);
+        r.read();
+        List<SessionSIN> sessions = r.getSessions();
     }
 
     public void addPage(URL url) {
-        wu.addPage(url);
+        webUsage.addPage(url);
     }
 
     public void addTransition(URL fromURL, URL toURL, UserSession userSession) {
-        wu.addTransition(fromURL, toURL, userSession);
+        webUsage.addTransition(fromURL, toURL, userSession);
     }
 
     public void deletePage(URL url) {

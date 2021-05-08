@@ -1,3 +1,4 @@
+package GraphWum;
 import org.neo4j.driver.types.Node;
 
 import java.io.BufferedReader;

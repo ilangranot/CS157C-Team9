@@ -1,3 +1,4 @@
+package GraphWum;
 import org.neo4j.graphdb.*;
 import java.util.HashMap;
 import java.util.Map;

@@ -13,12 +13,16 @@ import java.util.List;
 @Controller
 public class AppController {
 
-    private static final GraphWum.Model m = new GraphWum.Model();
+    private final GraphWum.Model m =
+            new GraphWum.Model(new DbWrapperDriver("bolt://localhost:7687", "neo4j", "1234" ));
+    private GraphStats g;
 
     /* index methods */
     @GetMapping("/index")
     public String getIndex(Model model) {
         model.addAttribute("model", m);
+        g = new GraphStats("index");
+        model.addAttribute("graphstats", g);
         return "index";
     }
 
@@ -35,6 +39,8 @@ public class AppController {
     public String setupCreate(Model model) {
         CreationObject urlObj = new CreationObject();
         model.addAttribute("url", urlObj);
+        g = new GraphStats("create");
+        model.addAttribute("graphstats", g);
         return "create";
     }
 
@@ -69,6 +75,8 @@ public class AppController {
     public String getDelete(Model model) {
         CreationObject urlObj = new CreationObject();
         model.addAttribute("url", urlObj);
+        g = new GraphStats("delete");
+        model.addAttribute("graphstats", g);
         return "delete";
     }
 
@@ -100,6 +108,8 @@ public class AppController {
     public String getMine(Model model) {
         CreationObject urlObj = new CreationObject();
         model.addAttribute("url", urlObj);
+        g = new GraphStats("mine");
+        model.addAttribute("graphstats", g);
         return "mine";
     }
 
