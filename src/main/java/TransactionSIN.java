@@ -1,21 +1,21 @@
 import java.util.Date;
 
 public class TransactionSIN {
-    private String fromURL;
-    private String toURL;
+    private PageURL fromURL;
+    private PageURL toURL;
     private Date atTime;
 
     public TransactionSIN(String fromURL, String toURL, Date atTime) {
-        this.fromURL = fromURL;
-        this.toURL = toURL;
+        this.fromURL = new PageURL(fromURL);
+        this.toURL = new PageURL(toURL);
         this.atTime = atTime;
     }
 
-    public String getFromURL() {
+    public PageURL getFromURL() {
         return fromURL;
     }
 
-    public String getToURL() {
+    public PageURL getToURL() {
         return toURL;
     }
 
