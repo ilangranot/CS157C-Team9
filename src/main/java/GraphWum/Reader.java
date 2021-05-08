@@ -75,16 +75,16 @@ public class Reader {
         /***
          *
          * @param userID
-         * @param url
+         * @param urlString
          * @param date
          */
-        public void process(int userID, String url, Date date) {
+        public void process(int userID, String urlString, Date date) {
 //            System.out.println(userID + ": " + url + " " + date.getTime()); // Remove later
             //TODO: null???
-            TransactionSIN transaction = new TransactionSIN(null, url, date); // Build Object
+            TransactionSIN transaction = new TransactionSIN(null, urlString, date); // Build Object
             try {
 //                Node thisPage = webUsage.addPage(new URL(url));
-                URL thisPage = (new URL(url));
+                URL thisPage = (new URL(urlString.split("\\?",2)[0]));
                 if(sameSession(userID, date)) { // Check if same session
                     webUsage.addTransition(previousPage, thisPage, new UserSession(String.valueOf(sessions.size())));
                     previousSession.addTransaction(transaction);

@@ -23,7 +23,7 @@ public class WebUsage {
     // TODO: CHECK if to set all as TRANSITION_TO
     public void addTransition(URL fromURL, URL toURL, UserSession userSession){
         dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
-                fromURL.toExternalForm(), toURL.toExternalForm(), NodeLabel.Page, "url", "s" + userSession.getId(), userSession.getId()); //"session"
+                fromURL.toExternalForm(), toURL.toExternalForm(), NodeLabel.Page, "url", "session", userSession.getId()); //"session"
     }
 
     public void addTransition(Node fromPage, Node toPage, UserSession userSession){
