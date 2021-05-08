@@ -1,3 +1,5 @@
+import org.neo4j.driver.types.Node;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +23,8 @@ public class Reader {
     private List<SessionSIN> sessions;
     private Date previousDate;
     private int previousUser = -1;
-    private String previousURL = null;
+//    private Node previousPage = null;
+    private URL previousPage = null;
     private SessionSIN previousSession;
     private WebUsage webUsage;
 
@@ -41,7 +44,7 @@ public class Reader {
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             sessions = new ArrayList<>();
 
-            while( (lineText = lineReader.readLine()) != null && count  < 2000) {
+            while( (lineText = lineReader.readLine()) != null) {
                 String[] data = lineText.split("\t"); //Read Line in
                 //Get Data from line
                 int userID = Integer.parseInt(data[0]);
@@ -51,7 +54,7 @@ public class Reader {
                 TransactionProcessor processor = new TransactionProcessor();
                 processor.process( userID, URL, date );
                 count++;
-                System.out.println(count);
+                System.out.println("line: " + count);
             }
 
             System.out.println(sessions.size()); // Remove later
@@ -72,24 +75,26 @@ public class Reader {
         /***
          *
          * @param userID
-         * @param URL
+         * @param url
          * @param date
          */
-        public void process(int userID, String URL, Date date) {
-//            System.out.println(userID + ": " + URL + " " + date.getTime()); // Remove later
-            TransactionSIN transaction = new TransactionSIN(previousURL, URL, date); // Build Object
+        public void process(int userID, String url, Date date) {
+//            System.out.println(userID + ": " + url + " " + date.getTime()); // Remove later
+            //TODO: null???
+            TransactionSIN transaction = new TransactionSIN(null, url, date); // Build Object
             try {
-                webUsage.addPage(new URL(URL));
-
+//                Node thisPage = webUsage.addPage(new URL(url));
+                URL thisPage = (new URL(url));
                 if(sameSession(userID, date)) { // Check if same session
-                    webUsage.addTransition(new URL(previousURL), new URL(URL), new UserSession(String.valueOf(sessions.size())));
+                    webUsage.addTransition(previousPage, thisPage, new UserSession(String.valueOf(sessions.size())));
                     previousSession.addTransaction(transaction);
                 }
                 else {
                     createSession(transaction, userID);
                 }
                 previousUser = userID; // Store ID
-                previousURL = URL;
+
+                previousPage = thisPage;
                 previousDate = date; // Store date
             }
             catch (Exception exception){

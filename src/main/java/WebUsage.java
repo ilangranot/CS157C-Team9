@@ -7,8 +7,8 @@ public class WebUsage {
 
     public WebUsage(DbWrapper dbWrapper) {
         this.dbWrapper = dbWrapper;
-        dbWrapper.assertConstraintsIndexes(NodeLabel.Page, "url");
         dbWrapper.deleteEntireDb();
+        dbWrapper.createConstraintsIndexes(NodeLabel.Page, "url");
     }
 
 
@@ -16,11 +16,25 @@ public class WebUsage {
         return dbWrapper.createNodeIfNotExists(NodeLabel.Page, "url", url.toExternalForm());
     }
 
-    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
-        Node fromPage = addPage(fromURL);
-        Node toPage = addPage(toURL);
-        dbWrapper.createRelationshipIfNotExists(new TransitionType(userSession.getId()),
-                fromPage, toPage, NodeLabel.Page, "url", "session", userSession.getId());
+    public void removePage(URL url){
+        dbWrapper.deleteNode(NodeLabel.Page, "url", url.toExternalForm());
     }
 
+    // TODO: CHECK if to set all as TRANSITION_TO
+    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
+        dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
+                fromURL.toExternalForm(), toURL.toExternalForm(), NodeLabel.Page, "url", "s" + userSession.getId(), userSession.getId()); //"session"
+    }
+
+    public void addTransition(Node fromPage, Node toPage, UserSession userSession){
+        dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
+                fromPage, toPage, NodeLabel.Page, "url", "sessions", userSession.getId()); //"session"
+    }
+
+//    public void addTransition(URL fromURL, URL toURL, UserSession userSession){
+//        Node fromPage = addPage(fromURL);
+//        Node toPage = addPage(toURL);
+//        dbWrapper.createRelationshipIfNotExists(new TransitionType("TRANSITION_TO"), //userSession.getId()
+//                fromPage, toPage, NodeLabel.Page, "url", "s" + userSession.getId(), userSession.getId()); //"session"
+//    }
 }

@@ -1,16 +1,11 @@
-import org.apache.commons.beanutils.ResultSetIterator;
-import org.neo4j.driver.AuthTokens;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.GraphDatabase;
-import org.neo4j.driver.Session;
 import org.neo4j.graphdb.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.neo4j.driver.Values.parameters;
+//import static org.neo4j.driver.Values.parameters;
 
 // TODO: Suppose to implement db wrapper
-public class DbWrapperEmbedded {
+public class DbWrapperEmbedded implements DbWrapper {
     private final GraphDatabaseService graphDatabaseService;
 
 
@@ -66,6 +61,76 @@ public class DbWrapperEmbedded {
         }
     }
 
+    @Override
+    public org.neo4j.driver.types.Node createNodeIfNotExists(NodeLabel nodeLabel, String key, Object value) {
+        return (org.neo4j.driver.types.Node)(createNodeIfNotExists(nodeLabel,key,value));
+    }
+
+    @Override
+    public void deleteNode(NodeLabel nodeLabel, String key, Object value) {
+
+    }
+
+    @Override
+    public void createRelationshipIfNotExists(TransitionType transitionType, org.neo4j.driver.types.Node nodeA, org.neo4j.driver.types.Node nodeB, NodeLabel nodeLabel, String matchProperty, String key, String value) {
+        System.out.println("NOT USED");
+    }
+
+    @Override
+    public void createRelationshipIfNotExists(TransitionType transitionType, String propertyA, String propertyB, NodeLabel nodeLabel, String matchProperty, String key, String value) {
+        try ( Transaction tx = graphDatabaseService.beginTx() )
+        {
+            // Database operations go here
+            Node firstNode = tx.createNode();
+            firstNode.setProperty( matchProperty, propertyA );
+            Node secondNode = tx.createNode();
+            secondNode.setProperty( matchProperty, propertyB );
+
+//            Relationship relationship = firstNode.createRelationshipTo( secondNode, transitionType );
+//            relationship.setProperty( key, value );
+            tx.commit();
+            System.out.println("Commited");
+        }
+    }
+
+    @Override
+    public void createConstraintsIndexes(NodeLabel nodeLabel, String key) {
+        System.out.println("CALLED ASSERT CONSTRAINTS");
+        try ( Transaction transaction = graphDatabaseService.beginTx() )
+        {
+            String query = "CREATE CONSTRAINT unique_webpages_url IF NOT EXISTS ON (n: " + nodeLabel + ") ASSERT n." + key + " IS UNIQUE";
+            Result result = transaction.execute(query);
+            transaction.commit();
+            System.out.println(result.resultAsString());
+        }
+    }
+
+    @Override
+    public void assertConstraintsIndexes(NodeLabel nodeLabel, String key) {
+        System.out.println("CALLED ASSERT CONSTRAINTS");
+        try ( Transaction transaction = graphDatabaseService.beginTx() )
+        {
+            String query = "SHOW INDEXES";
+            Result result = transaction.execute(query);
+            transaction.commit();
+            System.out.println(result.resultAsString());
+        }
+    }
+
+    @Override
+    public String deleteEntireDb() {
+        System.out.println("CALLED DELETE ALL");
+        try ( Transaction transaction = graphDatabaseService.beginTx() )
+        {
+            String query = "MATCH (n) DETACH DELETE n";
+//            String query = "SHOW INDEXES";
+            Result result = transaction.execute(query);
+
+            transaction.commit();
+            System.out.println(result.resultAsString());
+            return "SUCCESS";
+        }
+    }
 
 
     // TODO: to remove
