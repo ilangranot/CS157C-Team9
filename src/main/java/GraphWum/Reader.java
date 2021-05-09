@@ -28,9 +28,11 @@ public class Reader {
     private URL previousPage = null;
     private SessionSIN previousSession;
     private WebUsage webUsage;
+    private GraphStats graphStats;
 
     public Reader(WebUsage webUsage) {
         this.webUsage = webUsage;
+        this.graphStats = graphStats;
     }
 
     /***
@@ -38,6 +40,7 @@ public class Reader {
      */
     public void read() {
         int count = 0;
+        graphStats.setStatus(GraphStatus.IN_PROGRESS);
         try {
             File file = new File(fileName);
             BufferedReader lineReader = new BufferedReader(new FileReader(file));
@@ -52,12 +55,18 @@ public class Reader {
                 String URL = data[6];
                 Date date = sdf.parse(data[3] + " " + data[4]);
 
+                graphStats.readLine();
+
                 TransactionProcessor processor = new TransactionProcessor();
                 processor.process( userID, URL, date );
                 count++;
+
+                graphStats.processedLine();
+
                 System.out.println("line: " + count);
             }
 
+            graphStats.setStatus(GraphStatus.COMPLETED);
             System.out.println(sessions.size()); // Remove later
         }
         catch (IOException | ParseException e) {

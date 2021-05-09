@@ -20,6 +20,14 @@ public class GraphStats {
         linesProcessed++;
     }
 
+    public void setDistinctUsers() {
+        distinctUsers++;
+    }
+
+    public long getDistinctUsers() {
+        return distinctUsers;
+    }
+
     public long getLinesProcessed() {
         return linesProcessed;
     }
