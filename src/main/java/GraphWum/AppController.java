@@ -135,4 +135,10 @@ public class AppController {
         return "mine";
     }
 
+    @GetMapping("/Neoviz")
+    public String getNeo(Model model)
+    {
+        return "Neoviz";
+    }
+
 }
