@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content = "text/html; charset=UTF-8"/>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <link rel="stylesheet" href="styles/styles.css">
+    <title> CS 157C Group 9 Project </title>
+</head>
+<body>
+
+<h1 class="title" id = "main">Web Usage Miner</h1>
+
+<div class="main">
+    <a href = "create"><span class="dot">Create</span></a>
+    <a href = "delete"><span class="dot">Delete</span></a>
+    <br/>
+    <form class = "inlineform" id = "readform" th:action="@{/index}" method = "post" th:object="${reader}">
+        <a href = "#"><span class="formdot" id = "read" value="read">Load Sample</span></a>
+    </form>
+    <a href = "mine"><span class="dot">Mine</span></a>
+</div>
+
+<div class="overlay" id="overlay" style="display:none;">
+    <div class="spinner"></div>
+    <br/>
+    Reading in Data...
+</div>
+
+<script th:inline = "javascript">
+    $(document).ready(function() {
+        $('span#read').click(function(){
+            $('#readform').submit(function() {
+            $('#overlay').fadeIn().delay(27000).fadeOut();
+                $('#overlayfin').fadeIn().delay(3000).fadeOut();
+                return true;
+            })
+            $('#readform').trigger('submit');
+        });
+    });
+</script>
+
+</body>
+</html>
