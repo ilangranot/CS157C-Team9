@@ -20,10 +20,16 @@
 
     <div class = "bordered">
         <div id="node" class="tabcontent" style="display:block;">
+
+            <a href = "Neoviz">See Graph</a>
+
+
+
+
             <h3>Search for Webpage</h3>
             <p>Enter the title and/or URL for the webpage you would like to search for.</p>
             <br/>
-            <form action = "#" th:action="@{/mine}" method = "post" th:object="${url}">
+            <form action = "#" th:action="@{/search}" method = "post" th:object="${url}">
                 <input type="text" th:field="*{title}" placeholder = "Enter Title">
                 <input type="url" th:field="*{url}" placeholder = "Enter URL">
                 <input type="hidden" th:value="1" name="mode" />

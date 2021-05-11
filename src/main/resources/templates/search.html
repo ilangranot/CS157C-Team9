@@ -1,26 +1,21 @@
-<!-- Taken from https://github.com/neo4j-contrib/neovis.js -->
-
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>GraphWUM - Using Neovis.js</title>
-    <style type="text/css">
-        html, body {
-            font: 16pt arial;
-        }
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="js/scripts.js"></script>
+    <title> CS 157C Group 9 Project </title>
+    <style>
         #viz {
             width: 900px;
             height: 700px;
             border: 1px solid lightgray;
             font: 22pt;
+            display: inline-block;
+            background-color: white;
         }
-
     </style>
-
-
-<script src="https://cdn.neo4jlabs.com/neovis.js/v1.5.0/neovis.js"></script>
-
+    <script src="https://cdn.neo4jlabs.com/neovis.js/v1.5.0/neovis.js"></script>
     <script
             src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -65,16 +60,30 @@
     </script>
 </head>
 <body onload="draw()">
-<div id="viz"></div>
+<h1 class="title">Web Usage Miner</h1>
+<div class="sidenav">
+    <a href = "/"><span class="smalldot">Home</span></a>
+</div>
 
+<div class="content">
+    <div class="tab">
+        <span class="choice active">View Graph</span>
+    </div>
 
-Cypher query: <textarea rows="4" cols=50 id="cypher"></textarea><br>
-<input type="submit" value="Submit" id="reload">
-<input type="submit" value="Stabilize" id="stabilize">
+    <div class = "bordered">
+        <div class="tabcontent" style="display:block;align:center;">
+            <h3>Your Data</h3>
+            <div id="viz"></div>
+            <br/><br/>
+            Cypher query: <textarea rows="4" cols=50 id="cypher"></textarea><br/>
+            <input type="submit" value="Submit" id="reload">
+            <input type="submit" value="Stabilize" id="stabilize">
+            <br/><br/><br/>
+        </div>
+    </div>
 
-
+</div>
 </body>
-
 <script>
 	$("#reload").click(function() {
 

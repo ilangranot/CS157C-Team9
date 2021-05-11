@@ -14,13 +14,12 @@
 <h1 class="title" id = "main">Web Usage Miner</h1>
 
 <div class="main">
+    <br/></br/><br/><br/>
     <a href = "create"><span class="dot">Create</span></a>
-    <a href = "delete"><span class="dot">Delete</span></a>
-    <br/>
     <form class = "inlineform" id = "readform" th:action="@{/index}" method = "post" th:object="${reader}">
         <a href = "#"><span class="formdot" id = "read" value="read">Load Sample</span></a>
     </form>
-    <a href = "mine"><span class="dot">Mine</span></a>
+    <a href = "search"><span class="dot">Search</span></a>
 </div>
 
 <div class="overlay" id="overlay" style="display:none;">
