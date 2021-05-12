@@ -20,14 +20,13 @@ public class AppController {
     /* index methods */
     @GetMapping("/index")
     public String getIndex(Model model) {
-        model.addAttribute("model", m);
         g = new GraphStats("index");
         model.addAttribute("graphstats", g);
         return "index";
     }
 
     @PostMapping("/index")
-    public String loadData(@ModelAttribute("reader") GraphWum.Model m)
+    public String loadData()
     {
         m.processFile();
         // TODO: add a loading wheel and success message
@@ -50,9 +49,6 @@ public class AppController {
             // creating a webpage
             if (urlObj.getmode() == 1) {
                 URL url = new URL(urlObj.geturl());
-                String title;
-                // TODO: ensure support for adding a node with title and URL, not just URL
-                if (urlObj.gettitle() != null) title = urlObj.gettitle();
                 System.out.println(url.toString()); // delete later
                 m.addPage(url);
             }
@@ -70,75 +66,12 @@ public class AppController {
         return "create";
     }
 
-    /* delete page methods */
-    @GetMapping("/delete")
-    public String getDelete(Model model) {
-        CreationObject urlObj = new CreationObject();
-        model.addAttribute("url", urlObj);
-        g = new GraphStats("delete");
-        model.addAttribute("graphstats", g);
-        return "delete";
-    }
-
-    @PostMapping("/delete")
-    public String submitDeleteForm(@ModelAttribute("url") CreationObject urlObj) {
-        try {
-            // deleting a webpage
-            if (urlObj.getmode() == 1) {
-                URL url = new URL(urlObj.geturl());
-                System.out.println(url.toString()); // delete later
-                m.deletePage(url);
-            }
-            else {
-                // deleting a transition
-                URL urlFrom = new URL(urlObj.geturlFrom());
-                URL urlTo = new URL(urlObj.geturlTo());
-                UserSession session = new UserSession(urlObj.getSessionid());
-                m.deleteTransition(urlFrom, urlTo, session);
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        // TODO: add success message when the node is deleted
-        return "delete";
-    }
-
-    /* mine page methods */
-    @GetMapping("/mine")
+    /* search page methods */
+    @GetMapping("/search")
     public String getMine(Model model) {
-        CreationObject urlObj = new CreationObject();
-        model.addAttribute("url", urlObj);
-        g = new GraphStats("mine");
+        g = new GraphStats("search");
         model.addAttribute("graphstats", g);
-        return "mine";
-    }
-
-    @PostMapping("/mine")
-    public String submitMineForm(@ModelAttribute("url") CreationObject urlObj) {
-        try {
-            // searching for a webpage a webpage
-            if (urlObj.getmode() == 1) {
-                URL url = new URL(urlObj.geturl());
-                String title = urlObj.gettitle();
-                System.out.println(url.toString()); // delete later
-                m.searchPage(title, url); // title or URL can be null, not both though
-            }
-            else {
-                // searching for a transition
-                HashMap<String, String> filters = new HashMap<>();
-                // TODO: get all the fields filled out and add to hashmap
-                m.searchTransition(filters);
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return "mine";
-    }
-
-    @GetMapping("/Neoviz")
-    public String getNeo(Model model)
-    {
-        return "Neoviz";
+        return "search";
     }
 
 }

@@ -18,7 +18,7 @@ import java.net.URL;
  */
 public class Reader {
     public static final int SESSION_TIMEOUT = 960000;
-    public static final String fileName = "./src/main/java/1_22_ordered_combined_instructureHistory.tsv";
+    public static final String fileName = "./src/main/java/GraphWum/1_22_ordered_combined_instructureHistory.tsv";
     public static final String dateFormat = "MM/dd/yy HH:mm:ss";
 
     private List<SessionSIN> sessions;

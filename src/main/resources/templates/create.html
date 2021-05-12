@@ -24,7 +24,6 @@
                 <p>Enter the URL for the webpage you would like to add to the database.</p>
                 <br/>
                 <form action = "#" th:action="@{/create}" method = "post" th:object="${url}">
-                    <input type="text" th:field="*{title}" placeholder="Enter Webpage Title"><br/>
                     <input type="url" th:field="*{url}" placeholder = "Enter URL" required>
                     <input type="hidden" th:value="1" name="mode" />
                     <br/>
@@ -32,7 +31,6 @@
                     <br/><br/><br/><br/>
                 </form>
             </div>
-            </script>
             <div id="edge" class="tabcontent">
                 <h3>Create New Transition</h3>
                 <p>Enter the information for the webpage to transition from and the webpage to
@@ -46,7 +44,7 @@
                     <br/>
                     <label> Session ID </label>
                     <br/>
-                    <input type="text" th:field="*{sessionid}" placeholder="Enter Session ID" required>
+                    <input type="number" th:field="*{sessionid}" placeholder="Enter Session ID" required>
                     <br/><br/>
                     <label> Enter Information for Starting Webpage </label>
                     <br/>

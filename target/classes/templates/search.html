@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="js/scripts.js"></script>
+    <title> CS 157C Group 9 Project </title>
+    <style>
+        #viz {
+            width: 900px;
+            height: 700px;
+            border: 1px solid lightgray;
+            font: 22pt;
+            display: inline-block;
+            background-color: white;
+        }
+    </style>
+    <script src="https://cdn.neo4jlabs.com/neovis.js/v1.5.0/neovis.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+		// define config car
+		// instantiate nodevis object
+		// draw
+
+		var viz;
+
+		function draw() {
+			var config = {
+				container_id: "viz",
+				server_url: "bolt://localhost:7687",
+				server_user: "neo4j",
+				server_password: "1234",
+				labels: {
+					//"Character": "name",
+					"Page": {
+						"caption": "Page",
+						"size": "pagerank",
+						"community": "community"
+						//"sizeCypher": "MATCH (n) WHERE id(n) = {id} MATCH (n)-[r]-() RETURN sum(r.weight) AS c"
+					}
+				},
+				relationships: {
+					"TRANSITION_TO": {
+						"thickness": "weight",
+						"caption": false
+					}
+				},
+				initial_cypher: "MATCH (n:Page) OPTIONAL MATCH (n)-[r:TRANSITION_TO]->(m) return COLLECT(n) as nn, COLLECT(r) as rr, COLLECT(m) as mm"
+			};
+
+			viz = new NeoVis.default(config);
+			viz.render();
+			console.log(viz);
+
+		}
+    </script>
+</head>
+<body onload="draw()">
+<h1 class="title">Web Usage Miner</h1>
+<div class="sidenav">
+    <a href = "/"><span class="smalldot">Home</span></a>
+</div>
+
+<div class="content" style="text-align:center;">
+    <div class="tab">
+        <span class="choice active" onclick="infofunc(event, 'page')">Filter By Webpage</span>
+        <span class="choice" onclick="infofunc(event, 'transition')">Filter By Transition</span>
+        <span class="choice" onclick="infofunc(event, 'session')">Filter By Session</span>
+    </div>
+
+    <div class = "bordered">
+        <div class="tabcontent" id="page" style="display:block;align:center;">
+            <br/><br/>
+            <p> Enter URL</p>
+            <input type="url" id="filter_url" placeholder="Enter Webpage URL">
+            <input type="submit" id="furl" name="submit" value="Search">
+            <br/><br/><br/>
+        </div>
+        <div class="tabcontent" id="transition" style="align:center;">
+            <br/><br/>
+            <p> Enter Start URL </p>
+            <input type="url" id="start_url" placeholder="Enter Webpage URL"><br/>
+            <p> Enter End URL </p>
+            <input type="url" id="end_url" placeholder="Enter Webpage URL"><br/>
+            <input type="submit" value="Search" id="ftransition">
+            <br/><br/><br/>
+        </div>
+        <div class="tabcontent" id="session" style="align:center;">
+            <br/><br/>
+            <p> Enter Session ID </p>
+            <input type="number" placeholder="Enter Session ID" id = "session_id">
+            <input type="submit" value="Search" id="fsession">
+            <br/><br/><br/>
+        </div>
+    </div>
+
+    <h3 style = "text-align:center;">Your Data</h3>
+    <button id = "reset"> Reset Graph </button>
+    <br/>
+    <div id="viz"></div>
+    <br/><br/>
+
+</div>
+</body>
+<script>
+	$("#reset").click(function() {
+		var cypher = "MATCH (n:Page) OPTIONAL MATCH (n)-[r:TRANSITION_TO]->(m) return COLLECT(n) as nn, COLLECT(r) as rr, COLLECT(m) as mm";
+        viz.renderWithCypher(cypher);
+	});
+
+	$("#furl").click(function() {
+	    var url = $("#filter_url").val();
+		var cypher = "MATCH (n:Page {url:'" + url + "'}) OPTIONAL MATCH (n:Page {url:'" + url + "'})-[r:TRANSITION_TO]->(m)"
+		             + "return COLLECT(n) as nn, COLLECT(r) as rr, COLLECT(m) as mm";
+
+		if (cypher.length > 3) {
+			viz.renderWithCypher(cypher);
+		} else {
+			console.log("reload");
+			viz.reload();
+		}
+
+	});
+
+    $("#ftransition").click(function() {
+        var surl = $("#start_url").val();
+        var eurl = $("#end_url").val();
+        var cypher = "MATCH (n {url:'" + surl + "'} )-[r:TRANSITION_TO]-(m {url:'" + eurl + "'}) RETURN n,r,m";
+
+        if (cypher.length > 3) {
+            viz.renderWithCypher(cypher);
+        } else {
+            console.log("reload");
+            viz.reload();
+        }
+
+	});
+
+    $("#fsession").click(function() {
+        var sid = $("#session_id").val();
+        var cypher = "match (m)-[r:TRANSITION_TO]-(n) where '" + sid + "' in r.session return m, r, n;";
+
+        if (cypher.length > 3) {
+            viz.renderWithCypher(cypher);
+        } else {
+            console.log("reload");
+            viz.reload();
+        }
+
+	});
+
+</script>
+</html>
