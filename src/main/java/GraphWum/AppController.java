@@ -49,9 +49,6 @@ public class AppController {
             // creating a webpage
             if (urlObj.getmode() == 1) {
                 URL url = new URL(urlObj.geturl());
-                String title;
-                // TODO: ensure support for adding a node with title and URL, not just URL
-                if (urlObj.gettitle() != null) title = urlObj.gettitle();
                 System.out.println(url.toString()); // delete later
                 m.addPage(url);
             }

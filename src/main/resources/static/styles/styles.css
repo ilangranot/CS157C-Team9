@@ -11,6 +11,16 @@ h1.title {
     font-size:40pt;
 }
 
+button {
+  width: 100px;
+  height: 40px;
+  margin: 40px;
+  padding: 5px 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 a {
     color: black;
 }
@@ -192,11 +202,7 @@ label {
   padding-top: 25%;
   opacity: .80;
 }
-button {
-  margin: 40px;
-  padding: 5px 20px;
-  cursor: pointer;
-}
+
 .spinner {
     margin: 0 auto;
     height: 64px;

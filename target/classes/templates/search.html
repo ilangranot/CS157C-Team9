@@ -49,7 +49,7 @@
 						"caption": false
 					}
 				},
-				initial_cypher: "MATCH (n)-[r:TRANSITION_TO]->(m) RETURN n,r,m"
+				initial_cypher: "MATCH (n:Page) OPTIONAL MATCH (n)-[r:TRANSITION_TO]->(m) return COLLECT(n) as nn, COLLECT(r) as rr, COLLECT(m) as mm"
 			};
 
 			viz = new NeoVis.default(config);
@@ -65,43 +65,93 @@
     <a href = "/"><span class="smalldot">Home</span></a>
 </div>
 
-<div class="content">
+<div class="content" style="text-align:center;">
     <div class="tab">
-        <span class="choice active">View Graph</span>
+        <span class="choice active" onclick="infofunc(event, 'page')">Filter By Webpage</span>
+        <span class="choice" onclick="infofunc(event, 'transition')">Filter By Transition</span>
+        <span class="choice" onclick="infofunc(event, 'session')">Filter By Session</span>
     </div>
 
     <div class = "bordered">
-        <div class="tabcontent" style="display:block;align:center;">
-            <h3>Your Data</h3>
-            <div id="viz"></div>
+        <div class="tabcontent" id="page" style="display:block;align:center;">
             <br/><br/>
-            Cypher query: <textarea rows="4" cols=50 id="cypher"></textarea><br/>
-            <input type="submit" value="Submit" id="reload">
-            <input type="submit" value="Stabilize" id="stabilize">
+            <p> Enter URL</p>
+            <input type="url" id="filter_url" placeholder="Enter Webpage URL">
+            <input type="submit" id="furl" name="submit" value="Search">
+            <br/><br/><br/>
+        </div>
+        <div class="tabcontent" id="transition" style="align:center;">
+            <br/><br/>
+            <p> Enter Start URL </p>
+            <input type="url" id="start_url" placeholder="Enter Webpage URL"><br/>
+            <p> Enter End URL </p>
+            <input type="url" id="end_url" placeholder="Enter Webpage URL"><br/>
+            <input type="submit" value="Search" id="ftransition">
+            <br/><br/><br/>
+        </div>
+        <div class="tabcontent" id="session" style="align:center;">
+            <br/><br/>
+            <p> Enter Session ID </p>
+            <input type="number" placeholder="Enter Session ID" id = "session_id">
+            <input type="submit" value="Search" id="fsession">
             <br/><br/><br/>
         </div>
     </div>
 
+    <h3 style = "text-align:center;">Your Data</h3>
+    <button id = "reset"> Reset Graph </button>
+    <br/>
+    <div id="viz"></div>
+    <br/><br/>
+
 </div>
 </body>
 <script>
-	$("#reload").click(function() {
+	$("#reset").click(function() {
+		var cypher = "MATCH (n:Page) OPTIONAL MATCH (n)-[r:TRANSITION_TO]->(m) return COLLECT(n) as nn, COLLECT(r) as rr, COLLECT(m) as mm";
+        viz.renderWithCypher(cypher);
+	});
 
-		var cypher = $("#cypher").val();
+	$("#furl").click(function() {
+	    var url = $("#filter_url").val();
+		var cypher = "MATCH (n:Page {url:'" + url + "'}) OPTIONAL MATCH (n:Page {url:'" + url + "'})-[r:TRANSITION_TO]->(m)"
+		             + "return COLLECT(n) as nn, COLLECT(r) as rr, COLLECT(m) as mm";
 
 		if (cypher.length > 3) {
 			viz.renderWithCypher(cypher);
 		} else {
 			console.log("reload");
 			viz.reload();
-
 		}
 
 	});
 
-	$("#stabilize").click(function() {
-		viz.stabilize();
-	})
+    $("#ftransition").click(function() {
+        var surl = $("#start_url").val();
+        var eurl = $("#end_url").val();
+        var cypher = "MATCH (n {url:'" + surl + "'} )-[r:TRANSITION_TO]-(m {url:'" + eurl + "'}) RETURN n,r,m";
+
+        if (cypher.length > 3) {
+            viz.renderWithCypher(cypher);
+        } else {
+            console.log("reload");
+            viz.reload();
+        }
+
+	});
+
+    $("#fsession").click(function() {
+        var sid = $("#session_id").val();
+        var cypher = "match (m)-[r:TRANSITION_TO]-(n) where '" + sid + "' in r.session return m, r, n;";
+
+        if (cypher.length > 3) {
+            viz.renderWithCypher(cypher);
+        } else {
+            console.log("reload");
+            viz.reload();
+        }
+
+	});
 
 </script>
 </html>
